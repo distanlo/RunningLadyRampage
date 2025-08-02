@@ -28,19 +28,35 @@ let bones = [];
 let score = 0;
 let gameOver = false;
 let shatterParticles = [];
+let explosionTriggered = false;
+let scaleLady = false;
+let scale = 1;
 
 function drawDog() {
   ctx.drawImage(dogImg, dog.x, dog.y, dog.width, dog.height);
 }
 
 function drawLady() {
-  if (gameOver) return;
-  ctx.drawImage(ladyImg, lady.x, lady.y, lady.width, lady.height);
+  if (gameOver && !explosionTriggered) {
+    // Draw enlarged lady before explosion
+    scale += 0.05;
+    let newWidth = lady.width * scale;
+    let newHeight = lady.height * scale;
+    let newX = lady.x + lady.width / 2 - newWidth / 2;
+    let newY = lady.y + lady.height / 2 - newHeight / 2;
+    ctx.drawImage(ladyImg, newX, newY, newWidth, newHeight);
+    if (scale >= 2.5) {
+      triggerWinAnimation(newX + newWidth / 2, newY + newHeight / 2);
+      explosionTriggered = true;
+    }
+  } else if (!gameOver) {
+    ctx.drawImage(ladyImg, lady.x, lady.y, lady.width, lady.height);
+  }
 }
 
 function drawBones() {
   bones.forEach(b => {
-    ctx.drawImage(boneImg, b.x, b.y, 60, 40);
+    ctx.drawImage(boneImg, b.x, b.y, 80, 50); // Enlarged bone
   });
 }
 
@@ -60,15 +76,17 @@ function update() {
     b.x += 6;
     if (
       b.x < lady.x + lady.width &&
-      b.x + 60 > lady.x &&
+      b.x + 80 > lady.x &&
       b.y < lady.y + lady.height &&
-      b.y + 40 > lady.y
+      b.y + 50 > lady.y
     ) {
       bones.splice(index, 1);
       score++;
       lady.hits++;
       if (lady.hits >= 3) {
-        triggerWinAnimation();
+        gameOver = true;
+        scale = 1;
+        explosionTriggered = false;
       }
     }
   });
@@ -76,31 +94,34 @@ function update() {
   bones = bones.filter(b => b.x < 800);
 }
 
-function triggerWinAnimation() {
-  gameOver = true;
-  const numParticles = 100;
+function triggerWinAnimation(centerX, centerY) {
+  const numParticles = 150;
   for (let i = 0; i < numParticles; i++) {
     shatterParticles.push({
-      x: lady.x + lady.width / 2,
-      y: lady.y + lady.height / 2,
-      vx: (Math.random() - 0.5) * 10,
-      vy: (Math.random() - 0.5) * 10,
-      size: Math.random() * 5 + 2,
-      color: 'hotpink'
+      x: centerX,
+      y: centerY,
+      vx: (Math.random() - 0.5) * 12,
+      vy: (Math.random() - 0.5) * 12,
+      size: Math.random() * 6 + 2,
+      color: 'hotpink',
+      alpha: 1
     });
+  }
 }
 
 function updateShatter() {
   shatterParticles.forEach(p => {
     p.x += p.vx;
     p.y += p.vy;
-    p.vy += 0.2; // gravity
+    p.vy += 0.3;
+    p.alpha -= 0.01;
   });
+  shatterParticles = shatterParticles.filter(p => p.alpha > 0);
 }
 
 function drawShatter() {
   shatterParticles.forEach(p => {
-    ctx.fillStyle = p.color;
+    ctx.fillStyle = `rgba(255,105,180,${p.alpha})`;
     ctx.fillRect(p.x, p.y, p.size, p.size);
   });
 }
@@ -113,7 +134,7 @@ function draw() {
   drawShatter();
   ctx.fillStyle = 'lime';
   ctx.fillText("Score: " + score, 10, 20);
-  if (gameOver && shatterParticles.length > 0) {
+  if (gameOver && explosionTriggered && shatterParticles.length === 0) {
     ctx.fillText("YOU WIN", canvas.width / 2 - 40, canvas.height / 2);
   }
 }
