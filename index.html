@@ -6,14 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Running Lady Rampage</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .flashing-link {
+      font-size: 28px;
+      font-weight: bold;
+      color: lime;
+      animation: flash 1s infinite;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 30px;
+    }
+
+    @keyframes flash {
+      0% { opacity: 1; }
+      50% { opacity: 0.2; }
+      100% { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
   <h1>Running Lady Rampage</h1>
   <img src="assets/spritesheet.png" alt="Game Preview" style="max-width: 100%; height: auto; margin: 20px auto; display: block;">
   <p id="instructions">
     A heroic pixel dog. A fleeing hot-pink lady. You know what to do.<br>
-    Tap or press space to throw bones. 3 hits = game over.<br><br>
-    <a href="game.html" style="color: lime; font-size: 20px;">▶️ Continue to Game</a>
+    Tap or press space to throw bones. 3 hits = game over.
   </p>
+  <a href="game.html" class="flashing-link">▶️ CONTINUE TO GAME</a>
 </body>
 </html>
