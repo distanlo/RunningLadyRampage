@@ -13,12 +13,20 @@ boneImg.src = 'assets/bone.png';
 let imagesLoaded = 0;
 function checkLoaded() {
   imagesLoaded++;
-  if (imagesLoaded === 3) gameLoop();
+  console.log(`Loaded image ${imagesLoaded}/3`);
+  if (imagesLoaded === 3) {
+    console.log("All images loaded. Starting game...");
+    gameLoop();
+  }
 }
 
 dogImg.onload = checkLoaded;
 ladyImg.onload = checkLoaded;
 boneImg.onload = checkLoaded;
+
+dogImg.onerror = () => console.error("Failed to load dog image");
+ladyImg.onerror = () => console.error("Failed to load lady image");
+boneImg.onerror = () => console.error("Failed to load bone image");
 
 let dog = { x: 50, y: 300, width: 50, height: 50 };
 let lady = { x: 800, y: 300, width: 40, height: 50, hits: 0 };
@@ -27,15 +35,32 @@ let score = 0;
 let gameOver = false;
 
 function drawDog() {
-  ctx.drawImage(dogImg, dog.x, dog.y, dog.width, dog.height);
+  if (dogImg.complete && dogImg.naturalWidth > 0) {
+    ctx.drawImage(dogImg, dog.x, dog.y, dog.width, dog.height);
+  } else {
+    ctx.fillStyle = "white";
+    ctx.fillRect(dog.x, dog.y, dog.width, dog.height);
+  }
 }
 
 function drawLady() {
-  ctx.drawImage(ladyImg, lady.x, lady.y, lady.width, lady.height);
+  if (ladyImg.complete && ladyImg.naturalWidth > 0) {
+    ctx.drawImage(ladyImg, lady.x, lady.y, lady.width, lady.height);
+  } else {
+    ctx.fillStyle = "hotpink";
+    ctx.fillRect(lady.x, lady.y, lady.width, lady.height);
+  }
 }
 
 function drawBones() {
-  bones.forEach(b => ctx.drawImage(boneImg, b.x, b.y, 15, 10));
+  bones.forEach(b => {
+    if (boneImg.complete && boneImg.naturalWidth > 0) {
+      ctx.drawImage(boneImg, b.x, b.y, 15, 10);
+    } else {
+      ctx.fillStyle = "yellow";
+      ctx.fillRect(b.x, b.y, 15, 10);
+    }
+  });
 }
 
 function update() {
