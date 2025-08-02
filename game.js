@@ -3,11 +3,22 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 const dogImg = new Image();
-dogImg.src = 'assets/dog.png';
 const ladyImg = new Image();
-ladyImg.src = 'assets/lady.png';
 const boneImg = new Image();
+
+dogImg.src = 'assets/dog.png';
+ladyImg.src = 'assets/lady.png';
 boneImg.src = 'assets/bone.png';
+
+let imagesLoaded = 0;
+function checkLoaded() {
+  imagesLoaded++;
+  if (imagesLoaded === 3) gameLoop();
+}
+
+dogImg.onload = checkLoaded;
+ladyImg.onload = checkLoaded;
+boneImg.onload = checkLoaded;
 
 let dog = { x: 50, y: 300, width: 50, height: 50 };
 let lady = { x: 800, y: 300, width: 40, height: 50, hits: 0 };
@@ -82,8 +93,5 @@ document.addEventListener('keydown', e => {
 });
 
 canvas.addEventListener('touchstart', e => {
-    bones.push({ x: dog.x + dog.width, y: dog.y + 10 });
   bones.push({ x: dog.x + dog.width, y: dog.y + 10 });
 });
-
-gameLoop();

@@ -4,6 +4,8 @@ body {
   color: lime;
   font-family: 'Courier New', Courier, monospace;
   text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 canvas {
@@ -11,4 +13,5 @@ canvas {
   display: block;
   margin: 0 auto;
   border: 2px solid lime;
+  touch-action: manipulation;
 }
