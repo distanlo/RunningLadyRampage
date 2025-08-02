@@ -1,0 +1,14 @@
+
+body {
+  background-color: black;
+  color: lime;
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+}
+
+canvas {
+  background-color: #111;
+  display: block;
+  margin: 0 auto;
+  border: 2px solid lime;
+}
